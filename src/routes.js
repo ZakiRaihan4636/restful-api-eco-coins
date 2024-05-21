@@ -1,11 +1,21 @@
-const {createUser, getDataUser} = require('./handlers/usersHandler');
+const {createUser, getDataUser, getDataUserById, loginHandler, updateUser} = require('./handlers/usersHandler');
 const routes = [
   {
     method: 'GET',
     path: '/',
-    handler: (request, h) => {
+    handler: () => {
       return 'Hello World!';
     },
+  },
+  {
+    method: 'GET',
+    path: '/users/{id}',
+    handler: getDataUserById,
+  },
+  {
+    method: 'PUT',
+    path: '/users/{id}',
+    handler: updateUser,
   },
   {
     method: 'GET',
@@ -16,6 +26,11 @@ const routes = [
     method: 'POST',
     path: '/users',
     handler: createUser,
+  },
+  {
+    method: 'POST',
+    path: '/login',
+    handler: loginHandler,
   },
 ]
 
