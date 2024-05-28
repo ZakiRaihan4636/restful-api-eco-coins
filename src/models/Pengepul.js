@@ -1,45 +1,37 @@
-const { DataTypes } = require('sequelize');
-
+const {
+  DataTypes
+} = require('sequelize');
 const sequelize = require('../config/sequelize');
 
-const User = sequelize.define('User', {
-  id: {
+const Pengepul = sequelize.define('Pengepul', {
+  id_pengepul: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     primaryKey: true,
     autoIncrement: true,
   },
-  nama_lengkap: {
+  nama: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  gender: {
-    type: DataTypes.STRING,
-  },
-  username: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   alamat: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
   },
-
-  role: {
+  telepon: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
-})
+  },
+}, {
+  timestamps: false,
+  tableName: 'pengepul',
+});
 
-User.associate = (models) => {
-  User.hasMany(models.Transaksi, {
-    foreignKey: 'user_id',
-    as: 'transaksi'
-  });
-};
-
-module.exports = User;
+module.exports = Pengepul;

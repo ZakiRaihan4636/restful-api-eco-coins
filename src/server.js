@@ -1,7 +1,12 @@
 /* eslint-disable no-console */
 const Hapi = require('@hapi/hapi');
-const routes = require('./routes');
 const sequelize = require('./config/sequelize');
+const penggunaRoutes = require('./routes/penggunaRoutes');
+const sampahRoutes = require('./routes/sampahRoutes');
+const transaksiSampahRoutes = require('./routes/transaksiSampahRoutes');
+const pengepulRoutes = require('./routes/pengepulRoutes');
+const penukaranKoinRoutes = require('./routes/penukaranKoinRoutes');
+const nilaiTukarKoinRoutes = require('./routes/nilaiTukarKoinRoutes');
 
 const init = async () => {
   const server = Hapi.server({
@@ -12,11 +17,16 @@ const init = async () => {
     },
   });
 
-  server.route(routes);
+  server.route(penggunaRoutes);
+  server.route(sampahRoutes);
+  server.route(transaksiSampahRoutes);
+  server.route(pengepulRoutes);
+  server.route(penukaranKoinRoutes);
+  server.route(nilaiTukarKoinRoutes);
 
   try {
     // Sync Sequelize models
-    await sequelize.sync();
+    await sequelize.sync({ force: true });
     await server.start();
     console.log(`Server berjalan pada ${server.info.uri}`);
   } catch (err) {
