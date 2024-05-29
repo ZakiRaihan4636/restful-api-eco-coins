@@ -23,7 +23,7 @@ module.exports = [{
   },
   {
     method: 'GET',
-    path: '/transaksi-sampah/pengguna/{id_pengguna}/pending',
+    path: '/transaksi-sampah/pengguna/{id_pengguna}/status/pending',
     handler: transaksiSampahHandler.getAllTransakasiPenggunaByStatusPending
   },
   {

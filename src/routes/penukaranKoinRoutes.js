@@ -25,4 +25,24 @@ module.exports = [{
     path: '/penukaran-koin/{id}',
     handler: penukaranKoinHandler.deletePenukaranKoin,
   },
+  {
+    method: 'POST',
+    path: '/penukaran-koin/{id_penukaran}/verify',
+    handler: penukaranKoinHandler.verifyReedeemCoinByPengepul,
+  },
+  {
+    method: 'GET',
+    path: '/penukaran-koin/pengepul/{id_pengepul}',
+    handler: penukaranKoinHandler.getAllPenukaranKoinByPengepul,
+  },
+  {
+    method: 'GET',
+    path: '/penukaran-koin/pengepul/{id_pengepul}/status/pending',
+    handler: penukaranKoinHandler.getAllPenukaranKoinByStatusByPengepul,
+  },
+  {
+    method: 'GET',
+    path: '/penukaran-koin/pengguna/{id_pengguna}/status/pending',
+    handler: penukaranKoinHandler.getAllPenukaranKoinByStatusByPengguna,
+  },
 ];

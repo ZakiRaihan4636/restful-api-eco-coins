@@ -26,7 +26,7 @@ const init = async () => {
 
   try {
     // Sync Sequelize models
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     await server.start();
     console.log(`Server berjalan pada ${server.info.uri}`);
   } catch (err) {
