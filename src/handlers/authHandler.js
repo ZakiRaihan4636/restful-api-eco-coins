@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Pengguna = require('../models/Pengguna');
+const Pengepul = require('../models/Pengepul');
 const config = require('../config/config');
 const bcrypt = require('bcrypt');
 
@@ -9,52 +10,89 @@ const loginPengguna = async (request, h) => {
       email,
       password
     } = request.payload;
-
-    // Cari pengguna berdasarkan email
     const user = await Pengguna.findOne({
       where: {
         email
       }
     });
 
-    // Jika pengguna tidak ditemukan, kembalikan respons dengan kode status 404
     if (!user) {
       return h.response({
-        message: 'Pengguna tidak ditemukan'
+        message: 'Pengguna not found'
       }).code(404);
     }
 
-    // Verifikasi password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    // Jika password tidak cocok, kembalikan respons dengan kode status 401
     if (!isPasswordValid) {
       return h.response({
-        message: 'Email atau password salah'
+        message: 'Invalid email or password'
       }).code(401);
     }
 
-    // Buat token JWT
     const token = jwt.sign({
-      id_pengguna: user.id_pengguna
+      id_pengguna: user.id_pengguna,
+      role: 'pengguna'
     }, config.jwtSecret, {
-      expiresIn: '1h' // Token berlaku selama 1 jam
-    });
-
-    // Kembalikan token sebagai respons dengan kode status 200
+      expiresIn: '1h'
+    }, { algorithm: 'HS256' },);
     return h.response({
-      token
+      id_pengguna: user.id_pengguna,
+      token: token,
+      expiresIn: '1h'
     }).code(200);
   } catch (error) {
-    console.error('Error authenticating user:', error);
+    console.error('Error during authentication:', error);
     return h.response({
-      message: 'Terjadi kesalahan internal saat melakukan autentikasi'
+      message: 'Internal server error'
     }).code(500);
   }
+};
 
-  
+const loginPengepul = async (request, h) => {
+  try {
+    const {
+      email,
+      password
+    } = request.payload;
+    const user = await Pengepul.findOne({
+      where: {
+        email
+      }
+    });
+
+    if (!user) {
+      return h.response({
+        message: 'Pengepul not found'
+      }).code(404);
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return h.response({
+        message: 'Invalid email or password'
+      }).code(401);
+    }
+
+    const token = jwt.sign({
+      id_pegepul: user.id_pengepul,
+      role: 'pengepul'
+    }, config.jwtSecret, {
+      expiresIn: '1h'
+    }, );
+    return h.response({
+      id_pengepul: user.id_pengepul,
+      expiresIn: '1h',
+      token: token
+    }).code(200);
+  } catch (error) {
+    console.error('Error during authentication:', error);
+    return h.response({
+      message: 'Internal server error'
+    }).code(500);
+  }
 };
 
 module.exports = {
-  loginPengguna
+  loginPengguna,
+  loginPengepul
 };

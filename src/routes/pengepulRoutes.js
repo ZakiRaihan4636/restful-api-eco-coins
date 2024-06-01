@@ -3,7 +3,7 @@ const pengepulHandler = require('../handlers/pengepulHandler');
 module.exports = [
   {
     method: 'POST',
-    path: '/login/picker',
+    path: '/login/pengepul',
     handler: pengepulHandler.loginPengepul,
   },
   {

@@ -1,30 +1,37 @@
-const authMiddleware = require('../middlewares/authMiddleware');
 const penggunaHandler = require('../handlers/penggunaHandler')
-const authHandler = require ('../handlers/authHandler')
-
-module.exports = [
-  {
+const authHandler = require('../handlers/authHandler');
+const verifyRole = require('../middlewares/verifyRole');
+module.exports = [{
     method: 'POST',
-    path: '/login',
+    path: '/login/pengguna',
     handler: authHandler.loginPengguna,
-  },
+    options: {
+        auth: false,
+      }
+    },
   {
     method: 'POST',
     path: '/pengguna',
     handler: penggunaHandler.createPengguna,
+    options: {
+      auth: false,
+    }
   },
   {
     method: 'GET',
     path: '/pengguna',
     handler: penggunaHandler.getAllPengguna,
     options: {
-      pre: [authMiddleware]
+      auth: false,
     }
   },
   {
     method: 'GET',
     path: '/pengguna/{id}',
     handler: penggunaHandler.getPenggunaById,
+    options: {
+      pre: [verifyRole('pengguna')]
+    }
   },
   {
     method: 'PUT',

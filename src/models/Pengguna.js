@@ -34,6 +34,7 @@ const Pengguna = sequelize.define('Pengguna', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  
 }, {
   timestamps: false,
   tableName: 'pengguna',

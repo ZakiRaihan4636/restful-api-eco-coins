@@ -7,15 +7,44 @@ const transaksiSampahRoutes = require('./routes/transaksiSampahRoutes');
 const pengepulRoutes = require('./routes/pengepulRoutes');
 const penukaranKoinRoutes = require('./routes/penukaranKoinRoutes');
 const nilaiTukarKoinRoutes = require('./routes/nilaiTukarKoinRoutes');
+const Jwt = require('@hapi/jwt');
+const config = require('./config/config');
 
 const init = async () => {
   const server = Hapi.server({
     port: 9000,
     host: 'localhost',
     routes: {
-      cors: true,
+      cors: {
+        origin: ["*"]
+      },
     },
   });
+
+  await server.register(Jwt);
+
+  // Configure JWT strategy
+  server.auth.strategy('jwt', 'jwt', {
+    keys: config.jwtSecret,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      nbf: true,
+      exp: true,
+      maxAgeSec: 14400 // 4 hours
+    },
+    
+    validate: async (artifacts, request, h) => {
+            return {
+                isValid: true,
+                credentials: { user: artifacts.decoded.payload }
+            };
+        }
+  });
+
+  server.auth.default('jwt')
+
 
   server.route(penggunaRoutes);
   server.route(sampahRoutes);
@@ -24,9 +53,13 @@ const init = async () => {
   server.route(penukaranKoinRoutes);
   server.route(nilaiTukarKoinRoutes);
 
+
+
   try {
     // Sync Sequelize models
-    await sequelize.sync({ force: false });
+    await sequelize.sync({
+      force: false
+    });
     await server.start();
     console.log(`Server berjalan pada ${server.info.uri}`);
   } catch (err) {

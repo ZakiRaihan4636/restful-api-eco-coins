@@ -1,51 +1,5 @@
 const bcrypt = require('bcrypt');
 const Pengguna = require('../models/Pengguna');
-const { generateToken } = require('../handlers/authHandler');
-const loginPengguna = async (request, h) => {
-  try {
-    const {
-      email,
-      password
-    } = request.payload;
-
-    // Cari pengguna berdasarkan email
-    const pengguna = await Pengguna.findOne({
-      where: {
-        email
-      }
-    });
-
-    // Jika pengguna tidak ditemukan, kembalikan respons dengan kode status 404
-    if (!pengguna) {
-      return h.response({
-        message: 'Pengguna tidak ditemukan'
-      }).code(404);
-    }
-
-    // Verifikasi password
-    const passwordMatch = await bcrypt.compare(password, pengguna.password);
-
-    // Jika password tidak cocok, kembalikan respons dengan kode status 401
-    if (!passwordMatch) {
-      return h.response({
-        message: 'Email atau password salah'
-      }).code(401);
-    }
-
-    // Jika autentikasi berhasil, buat token JWT
-    const token = generateToken(pengguna.id, 'pengguna');
-
-    // Kembalikan token sebagai respons dengan kode status 200
-    return h.response({
-      token
-    }).code(200);
-  } catch (error) {
-    console.error('Error authenticating user:', error);
-    return h.response({
-      message: 'Terjadi kesalahan internal saat melakukan autentikasi'
-    }).code(500);
-  }
-};
 
 const createPengguna = async (request, h) => {
   try {
@@ -116,7 +70,11 @@ const createPengguna = async (request, h) => {
 const getAllPengguna = async (request, h) => {
   try {
     const pengguna = await Pengguna.findAll();
-    return h.response(pengguna).code(200);
+    return h.response({
+      status: "sucess",
+      message: "Data users berhasil didapatkan",
+      pengguna: pengguna,
+    }).code(200);
   } catch (err) {
     return h.response(err).code(500);
   }
@@ -126,7 +84,11 @@ const getPenggunaById = async (request, h) => {
   try {
     const pengguna = await Pengguna.findByPk(request.params.id);
     if (pengguna) {
-      return h.response(pengguna).code(200);
+      return h.response({
+        status: "success",
+        "message": "Data Pengguna by id successfully retrieved",
+        pengguna
+      }).code(200);
     }
     return h.response({
       message: 'Pengguna not found'
@@ -174,5 +136,4 @@ module.exports = {
   getPenggunaById,
   updatePengguna,
   deletePengguna,
-  loginPengguna
 };

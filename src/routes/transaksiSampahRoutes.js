@@ -1,9 +1,13 @@
 const transaksiSampahHandler = require('../handlers/transakasiSampahHandler');
+const verifyRole = require('../middlewares/verifyRole');
 
 module.exports = [{
     method: 'POST',
     path: '/transaksi-sampah',
     handler: transaksiSampahHandler.createTransaksiSampah,
+    options: {
+      pre: [verifyRole('pengguna')]
+    }
   },
 
   {
