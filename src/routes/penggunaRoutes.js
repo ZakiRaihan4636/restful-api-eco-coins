@@ -37,10 +37,16 @@ module.exports = [{
     method: 'PUT',
     path: '/pengguna/{id}',
     handler: penggunaHandler.updatePengguna,
+    options: {
+      pre: [verifyRole('pengguna')]
+    }
   },
   {
     method: 'DELETE',
     path: '/pengguna/{id}',
     handler: penggunaHandler.deletePengguna,
+    options: {
+      pre: [verifyRole('pengepul')]
+    }
   },
 ];

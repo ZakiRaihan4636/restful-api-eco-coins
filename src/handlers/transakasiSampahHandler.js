@@ -48,6 +48,121 @@ const createTransaksiSampah = async (request, h) => {
   }
 };
 
+const getALlRiwayatTraksaksiByIdPengguna = async (request, h) => {
+  try {
+    const {
+      id_pengguna
+    } = request.params;
+
+    const riwayatTransaksi = await TransaksiSampah.findAll({
+      include: [{
+          model: Pengguna
+        },
+        {
+          model: Sampah
+        },
+        {
+          model: Pengepul
+        }
+      ],
+      where: {
+        id_pengguna: id_pengguna,
+        status: ['diterima', 'ditolak'] // Ubah kondisi status menjadi array
+      },
+    });
+
+    if (!riwayatTransaksi || riwayatTransaksi.length === 0) { // Periksa apakah riwayatTransaksi tidak ditemukan atau kosong
+      return h.response({
+        status: 'error',
+        message: "Data riwayat transaksi by id Pengguna tidak ditemukan",
+      }).code(404);
+    }
+
+    const formatedRiwayatTransaksi = riwayatTransaksi.map(item => {
+      return {
+        id_transaksi: item.id_transaksi,
+        id_pengguna: item.id_pengguna,
+        id_sampah: item.id_sampah,
+        nama_pengguna: item.Pengguna.nama, // Mengambil nama pengguna dari relasi
+        nama_pengepul: item.Pengepul.nama, // Mengambil nama pengguna dari relasi
+        jenis_sampah: item.Sampah.jenis_sampah, // Mengambil nama jenis sampah dari relasi
+        berat_kg: item.berat_kg,
+        nilai_koin_per_kg: item.Sampah.nilai_koin_per_kg,
+        jumlah_koin: item.jumlah_koin,
+        alamat: item.Pengguna.alamat,
+        tanggal: item.tanggal,
+        status: item.status
+      }
+    })
+
+    return h.response({
+      status: 'success',
+      message: 'Data riwayat transaksi by id pengguna berhasil ditemukan',
+      riwayat: formatedRiwayatTransaksi
+    }).code(200);
+  } catch (err) {
+    console.error('Error fetching transaction history:', err);
+    return h.response(err).code(500);
+  }
+}
+const getALlRiwayatTraksaksiByIdPengepul = async (request, h) => {
+  try {
+    const {
+      id_pengepul
+    } = request.params;
+
+    const riwayatTransaksi = await TransaksiSampah.findAll({
+      include: [{
+          model: Pengguna
+        },
+        {
+          model: Sampah
+        },
+        {
+          model: Pengepul
+        }
+      ],
+      where: {
+        id_pengepul: id_pengepul,
+        status: ['diterima', 'ditolak'] // Ubah kondisi status menjadi array
+      },
+    });
+
+    if (!riwayatTransaksi || riwayatTransaksi.length === 0) { // Periksa apakah riwayatTransaksi tidak ditemukan atau kosong
+      return h.response({
+        status: 'error',
+        message: "Data riwayat transaksi by id Pengguna tidak ditemukan",
+      }).code(404);
+    }
+
+    const formatedRiwayatTransaksi = riwayatTransaksi.map(item => {
+      return {
+        id_transaksi: item.id_transaksi,
+        id_pengguna: item.id_pengguna,
+        id_sampah: item.id_sampah,
+        nama_pengguna: item.Pengguna.nama, // Mengambil nama pengguna dari relasi
+        nama_pengepul: item.Pengepul.nama, // Mengambil nama pengguna dari relasi
+        jenis_sampah: item.Sampah.jenis_sampah, // Mengambil nama jenis sampah dari relasi
+        berat_kg: item.berat_kg,
+        nilai_koin_per_kg: item.Sampah.nilai_koin_per_kg,
+        jumlah_koin: item.jumlah_koin,
+        alamat: item.Pengguna.alamat,
+        tanggal: item.tanggal,
+        status: item.status
+      }
+    })
+
+    return h.response({
+      status: 'success',
+      message: 'Data riwayat transaksi by id pengguna berhasil ditemukan',
+      riwayat: formatedRiwayatTransaksi
+    }).code(200);
+  } catch (err) {
+    console.error('Error fetching transaction history:', err);
+    return h.response(err).code(500);
+  }
+}
+
 
 const getAllTransaksiSampah = async (request, h) => {
   try {
@@ -317,5 +432,7 @@ module.exports = {
   verifyTransactionByPengepul,
   rejectTransactionByPengepul,
   getAllTransakasiSampahByPenggunaId,
-  getAllTransakasiPenggunaByStatusPending
+  getAllTransakasiPenggunaByStatusPending,
+  getALlRiwayatTraksaksiByIdPengguna,
+  getALlRiwayatTraksaksiByIdPengepul
 };

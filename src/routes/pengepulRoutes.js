@@ -1,15 +1,21 @@
 const pengepulHandler = require('../handlers/pengepulHandler');
+const authHandler = require('../handlers/authHandler');
 
-module.exports = [
-  {
+module.exports = [{
     method: 'POST',
     path: '/login/pengepul',
-    handler: pengepulHandler.loginPengepul,
+    handler: authHandler.loginPengepul,
+    options: {
+      auth: false,
+    }
   },
   {
     method: 'POST',
     path: '/pengepul',
     handler: pengepulHandler.createPengepul,
+    options: {
+      auth: false,
+    }
   },
   {
     method: 'GET',

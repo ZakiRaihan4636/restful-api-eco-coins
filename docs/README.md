@@ -100,6 +100,11 @@ http://localhost:9000
     }
   }
 ```
+
+##### update Transaction waste
+##### delete Transaction waste
+
+
 ##### Get all data transactions by users
 > mendapatkan data transaksi berdasarkan id user
 - URL: <span style="color:orange">/transaksi-sampah/pengguna/{id_pengguna}</span>
@@ -129,6 +134,8 @@ http://localhost:9000
 	}
 ]
 ```
+
+
 
 ##### Get all data transactions by status pending
 > mendapatkan data transaksi berdasarkan id user dan status pending
@@ -164,6 +171,11 @@ http://localhost:9000
 }
 ```
 
+##### gett all history data transactions
+##### add redeem coin
+##### Get all redeem coin by status pending
+##### get all history redeem coin
+
 #### Enpoints Picker
 
 ##### add New Picker
@@ -186,6 +198,22 @@ http://localhost:9000
 	"password": "$2b$10$EQYiOH6cw0VrE/MNlbHKZuRnVusHQ8BV3ZILgDdtv1K.FIDB6XG16"
 }
 ```
+##### Login Picker
 
+##### add waste category
+
+##### add Redeem waste
+
+##### verify transctions
+
+##### get data Picker by Id
+
+##### get data transaksi id
+
+##### get data transaksi by id picker
+
+##### get riwayat transakasi by id picker
+
+#####  verify redeem coin
 
 
