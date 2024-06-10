@@ -47,13 +47,7 @@ const createPenukaranKoin = async (request, h) => {
       status: 'pending'
     });
 
-    // Kurangi saldo koin pengguna
-    await Pengguna.decrement('saldo_koin', {
-      by: nilaiTukar.nilai_koin,
-      where: {
-        id_pengguna: pengguna.id_pengguna
-      }
-    });
+
 
     return h.response(penukaran).code(201);
   } catch (error) {
@@ -128,10 +122,10 @@ const verifyReedeemCoinByPengepul = async (request, h) => {
     // Temukan transaksi berdasarkan ID
     const redeem = await PenukaranKoin.findOne({
       where: {
-        id_penukaran: id_penukaran
+        id_penukaran
       }
     });
-    console.log(`id_penukaran: ${id_penukaran}`);
+
     if (!redeem) {
       return h.response({
         message: 'Redeem not found'
@@ -144,6 +138,9 @@ const verifyReedeemCoinByPengepul = async (request, h) => {
         message: 'Redeem already verified'
       }).code(400);
     }
+
+    // Ambil nilai tukar koin dari transaksi
+    const nilaiTukar = await NilaiTukarKoin.findByPk(redeem.id_nilai_tukar_koin);
 
     // Verifikasi transaksi (mis. dengan mengubah status menjadi 'diterima')
     redeem.status = 'diterima';
@@ -160,6 +157,17 @@ const verifyReedeemCoinByPengepul = async (request, h) => {
 
     await redeem.save();
 
+    // Kurangi saldo koin pengguna
+    const pengguna = await Pengguna.findByPk(redeem.id_pengguna);
+    if (!pengguna) {
+      return h.response({
+        message: 'User not found'
+      }).code(404);
+    }
+
+    pengguna.saldo_koin -= nilaiTukar.nilai_koin;
+    await pengguna.save();
+
     return h.response({
       message: 'Transaction verified successfully'
     }).code(200);
@@ -170,6 +178,7 @@ const verifyReedeemCoinByPengepul = async (request, h) => {
     }).code(500);
   }
 };
+
 
 const getAllPenukaranKoinByPengepul = async (request, h) => {
   try {
@@ -241,7 +250,12 @@ const getAllPenukaranKoinByStatusByPengguna = async (request, h) => {
       where: {
         id_pengguna,
         status: 'pending'
-      }
+      },
+      include: [{
+        model: Pengepul,
+        attributes: ['nama']
+      }, ]
+
     });
 
     if (!penukaranKoinByStatusPending || penukaranKoinByStatusPending.length === 0) {
@@ -292,6 +306,41 @@ const rejectReedeemCoinByPengepul = async (request, h) => {
   }
 };
 
+const getALlRiwayatTukarKoinByIdPengguna = async (request, h) => {
+  try {
+    const {
+      id_pengguna
+    } = request.params;
+
+    const riwayatTransaksi = await PenukaranKoin.findAll({
+      where: {
+        id_pengguna: id_pengguna,
+        status: ['diterima', 'ditolak'] // Ubah kondisi status menjadi array
+      },
+      include: [{
+        model: Pengepul,
+        attributes: ['nama']
+      }, ]
+    });
+
+    if (!riwayatTransaksi || riwayatTransaksi.length === 0) { // Periksa apakah riwayatTransaksi tidak ditemukan atau kosong
+      return h.response({
+        status: 'error',
+        message: "Data riwayat transaksi by id Pengguna tidak ditemukan",
+      }).code(404);
+    }
+
+
+    return h.response({
+      status: 'success',
+      message: 'Data riwayat transaksi by id pengguna berhasil ditemukan',
+      data: riwayatTransaksi
+    }).code(200);
+  } catch (err) {
+    console.error('Error fetching transaction history:', err);
+    return h.response(err).code(500);
+  }
+}
 
 module.exports = {
   createPenukaranKoin,
@@ -303,5 +352,6 @@ module.exports = {
   verifyReedeemCoinByPengepul,
   rejectReedeemCoinByPengepul,
   getAllPenukaranKoinByStatusByPengepul,
-  getAllPenukaranKoinByStatusByPengguna
+  getAllPenukaranKoinByStatusByPengguna,
+  getALlRiwayatTukarKoinByIdPengguna,
 };

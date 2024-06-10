@@ -38,7 +38,8 @@ const loginPengguna = async (request, h) => {
     return h.response({
       id_pengguna: user.id_pengguna,
       token: token,
-      expiresIn: '1h'
+      expiresIn: '1h',
+      role: 'pengguna'
     }).code(200);
   } catch (error) {
     console.error('Error during authentication:', error);
@@ -82,6 +83,7 @@ const loginPengepul = async (request, h) => {
     return h.response({
       id_pengepul: user.id_pengepul,
       expiresIn: '1h',
+      role: 'pengepul',
       token: token
     }).code(200);
   } catch (error) {

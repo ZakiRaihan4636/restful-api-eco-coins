@@ -36,6 +36,14 @@ module.exports = [{
   },
   {
     method: 'GET',
+    path: '/transaksi-sampah/pengepul/{id_pengepul}/status/pending',
+    handler: transaksiSampahHandler.getAllTransakasiPengepulByStatusPending,
+    options: {
+      pre: [verifyRole('pengepul')]
+    }
+  },
+  {
+    method: 'GET',
     path: '/transaksi-sampah/pengguna/{id_pengguna}/status/pending',
     handler: transaksiSampahHandler.getAllTransakasiPenggunaByStatusPending,
     options: {

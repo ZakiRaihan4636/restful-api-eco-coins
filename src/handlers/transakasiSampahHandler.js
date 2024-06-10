@@ -358,6 +358,48 @@ const getAllTransakasiPenggunaByStatusPending = async (request, h) => {
         {
           model: Pengepul,
           attributes: ['nama']
+        }, {
+          model: Pengguna,
+          attributes: ['nama']
+        }
+      ]
+    });
+
+
+    return h.response({
+      status: "success",
+      message: "data berhasil di dapatkan",
+      data: transactions
+    }).code(200);
+  } catch (error) {
+    console.error('Error fetching pending transactions by pengguna ID:', error);
+    return h.response({
+      message: 'Failed to fetch transactions'
+    }).code(500);
+  }
+};
+const getAllTransakasiPengepulByStatusPending = async (request, h) => {
+  try {
+    const {
+      id_pengepul
+    } = request.params;
+
+    // Temukan semua transaksi dengan status 'pending' untuk pengguna tertentu
+    const transactions = await TransaksiSampah.findAll({
+      where: {
+        id_pengepul,
+        status: 'pending'
+      },
+      include: [{
+          model: Sampah,
+          attributes: ['jenis_sampah', 'nilai_koin_per_kg'] // Menambahkan detail sampah
+        },
+        {
+          model: Pengepul,
+          attributes: ['nama']
+        }, {
+          model: Pengguna,
+          attributes: ['nama', 'alamat']
         }
       ]
     });
@@ -434,5 +476,6 @@ module.exports = {
   getAllTransakasiSampahByPenggunaId,
   getAllTransakasiPenggunaByStatusPending,
   getALlRiwayatTraksaksiByIdPengguna,
-  getALlRiwayatTraksaksiByIdPengepul
+  getALlRiwayatTraksaksiByIdPengepul,
+  getAllTransakasiPengepulByStatusPending
 };

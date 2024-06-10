@@ -13,9 +13,6 @@ module.exports = [{
     method: 'GET',
     path: '/penukaran-koin',
     handler: penukaranKoinHandler.getAllPenukaranKoin,
-    options: {
-      pre: [verifyRole('pengepul'), verifyRole('pengguna')]
-    }
   },
   {
     method: 'GET',
@@ -63,6 +60,14 @@ module.exports = [{
     method: 'GET',
     path: '/penukaran-koin/pengguna/{id_pengguna}/status/pending',
     handler: penukaranKoinHandler.getAllPenukaranKoinByStatusByPengguna,
+    options: {
+      pre: [verifyRole('pengguna')]
+    }
+  },
+  {
+    method: 'GET',
+    path: '/penukaran-koin/riwayat/pengguna/{id_pengguna}',
+    handler: penukaranKoinHandler.getALlRiwayatTukarKoinByIdPengguna,
     options: {
       pre: [verifyRole('pengguna')]
     }

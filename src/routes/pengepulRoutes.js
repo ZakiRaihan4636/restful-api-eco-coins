@@ -21,6 +21,9 @@ module.exports = [{
     method: 'GET',
     path: '/pengepul',
     handler: pengepulHandler.getAllPengepul,
+    options: {
+      auth: false,
+    }
   },
   {
     method: 'GET',
