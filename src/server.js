@@ -13,7 +13,7 @@ const config = require('./config/config');
 const init = async () => {
   const server = Hapi.server({
     port: 9000,
-    host: 'localhost',
+    host: '0.0.0.0',
     routes: {
       cors: {
         origin: ["*"]
@@ -34,13 +34,15 @@ const init = async () => {
       exp: true,
       maxAgeSec: 14400 // 4 hours
     },
-    
+
     validate: async (artifacts, request, h) => {
-            return {
-                isValid: true,
-                credentials: { user: artifacts.decoded.payload }
-            };
+      return {
+        isValid: true,
+        credentials: {
+          user: artifacts.decoded.payload
         }
+      };
+    }
   });
 
   server.auth.default('jwt')
