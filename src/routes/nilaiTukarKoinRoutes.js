@@ -13,11 +13,22 @@ module.exports = [{
     "method": "GET",
     "path": "/nilai-tukar",
     "handler": nilaiTukarKoinHandler.getAllNilaiTukarKoin,
-    
+
   },
   {
     "method": "DELETE",
     "path": "/nilai-tukar/{id_nilai_tukar_koin}",
     "handler": nilaiTukarKoinHandler.deleteNilaiTukarKoin,
+    "options": {
+      pre: [verifyRole('pengepul')]
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/nilai-tukar/{id_nilai_tukar_koin}",
+    "handler": nilaiTukarKoinHandler.updateNilaiTukarKoin,
+    "options": {
+      pre: [verifyRole('pengepul')]
+    }
   },
 ]

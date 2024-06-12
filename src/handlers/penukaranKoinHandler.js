@@ -218,7 +218,10 @@ const getAllPenukaranKoinByStatusByPengepul = async (request, h) => {
       where: {
         id_pengepul,
         status: 'pending'
-      }
+      }, include: [{
+        model: Pengguna,
+        attributes: ['nama', 'telepon']
+      }, ]
     });
 
     if (!penukaranKoinByStatusPending || penukaranKoinByStatusPending.length === 0) {
@@ -253,7 +256,7 @@ const getAllPenukaranKoinByStatusByPengguna = async (request, h) => {
       },
       include: [{
         model: Pengepul,
-        attributes: ['nama']
+        attributes: ['nama', 'telepon']
       }, ]
 
     });
@@ -281,11 +284,11 @@ const getAllPenukaranKoinByStatusByPengguna = async (request, h) => {
 const rejectReedeemCoinByPengepul = async (request, h) => {
   try {
     const {
-      id_transaksi
+      id_penukaran
     } = request.params;
 
     // Temukan transaksi berdasarkan ID
-    const transaction = await TransaksiSampah.findByPk(id_transaksi);
+    const transaction = await PenukaranKoin.findByPk(id_penukaran);
     if (!transaction) {
       return h.response({
         message: 'Transaction not found'
@@ -341,6 +344,41 @@ const getALlRiwayatTukarKoinByIdPengguna = async (request, h) => {
     return h.response(err).code(500);
   }
 }
+const getALlRiwayatTukarKoinByIdPengepul = async (request, h) => {
+  try {
+    const {
+      id_pengepul
+    } = request.params;
+
+    const riwayatTransaksi = await PenukaranKoin.findAll({
+      where: {
+        id_pengepul: id_pengepul,
+        status: ['diterima', 'ditolak'] // Ubah kondisi status menjadi array
+      },
+      include: [{
+        model: Pengguna,
+        attributes: ['nama', 'telepon']
+      }, ]
+    });
+
+    if (!riwayatTransaksi || riwayatTransaksi.length === 0) { // Periksa apakah riwayatTransaksi tidak ditemukan atau kosong
+      return h.response({
+        status: 'error',
+        message: "Data riwayat transaksi by id Pengguna tidak ditemukan",
+      }).code(404);
+    }
+
+
+    return h.response({
+      status: 'success',
+      message: 'Data riwayat transaksi by id pengguna berhasil ditemukan',
+      data: riwayatTransaksi
+    }).code(200);
+  } catch (err) {
+    console.error('Error fetching transaction history:', err);
+    return h.response(err).code(500);
+  }
+}
 
 module.exports = {
   createPenukaranKoin,
@@ -354,4 +392,5 @@ module.exports = {
   getAllPenukaranKoinByStatusByPengepul,
   getAllPenukaranKoinByStatusByPengguna,
   getALlRiwayatTukarKoinByIdPengguna,
+  getALlRiwayatTukarKoinByIdPengepul
 };

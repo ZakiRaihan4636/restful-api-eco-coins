@@ -41,6 +41,14 @@ module.exports = [{
     }
   },
   {
+    method: 'POST',
+    path: '/penukaran-koin/{id_penukaran}/reject',
+    handler: penukaranKoinHandler.rejectReedeemCoinByPengepul,
+    options: {
+      pre: [verifyRole('pengepul')]
+    }
+  },
+  {
     method: 'GET',
     path: '/penukaran-koin/pengepul/{id_pengepul}',
     handler: penukaranKoinHandler.getAllPenukaranKoinByPengepul,
@@ -70,6 +78,14 @@ module.exports = [{
     handler: penukaranKoinHandler.getALlRiwayatTukarKoinByIdPengguna,
     options: {
       pre: [verifyRole('pengguna')]
+    }
+  },
+  {
+    method: 'GET',
+    path: '/penukaran-koin/riwayat/pengepul/{id_pengepul}',
+    handler: penukaranKoinHandler.getALlRiwayatTukarKoinByIdPengepul,
+    options: {
+      pre: [verifyRole('pengepul')]
     }
   },
 ];

@@ -14,9 +14,6 @@ module.exports = [{
     method: 'GET',
     path: '/sampah',
     handler: sampahHandler.getAllSampah,
-    options: {
-      pre: [verifyRole('pengepul')]
-    }
   },
   {
     method: 'GET',
