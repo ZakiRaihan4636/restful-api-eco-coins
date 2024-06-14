@@ -1,6 +1,6 @@
 ## Eco Coin API Documentation
 ### Base URL
-http://localhost:9000
+https://app-1.ecoproject.my.id/
 
 ---
 ### Endpoints
